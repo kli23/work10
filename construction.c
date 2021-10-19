@@ -1,15 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+#include "construction.h"
 
-struct pokestat {
-  char pokemon[40];
-  int basehp;
-  int baseattack;
-  struct pokestat *next;
-
-  };
 
 void printpokestat(struct pokestat *p) {
 
@@ -48,27 +41,26 @@ struct pokestat * insert_front(struct pokestat *p, char *c, int i, int a) {
 }
 
 struct pokestat * free_list(struct pokestat *p) {
-  if (p->next != 0)
+  if (p->next)
     free_list(p->next);
   free(p);
   return p;
 }
 
-int main() {
-  //creating first node
-  struct pokestat *a = createpoke("Charizard", 289, 222);
-
-  //testing insert_front and print_list
-  struct pokestat *b = insert_front(a, "Zekrom", 251, 331);
-  struct pokestat *c = insert_front(b, "Bulbasaur", 454, 120);
-  print_list(a);
-  printf("\n");
-  print_list(b);
-  printf("\n");
-  print_list(c);
-
-  printf("\n");
-  c = free_list(c);
-  print_list(c);
-  return 0;
+struct pokestat * remove_node(struct pokestat *front, int data) {
+  struct pokestat *f = front;
+  // special case for first node
+  if (front->basehp == data) {
+    f = front->next;
+    return f;
+  }
+  while (front->next) {
+    if (front->next->basehp == data) {
+      front->next = front->next->next;
+      return f;
+    }
+    front = front->next;
+  }
+  return f;
 }
+
